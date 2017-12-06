@@ -1,0 +1,1 @@
+gcc -Wall -Werror main.c -o main.o -lncurses && ./main.o
