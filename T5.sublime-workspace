@@ -4,6 +4,50 @@
 		"selected_items":
 		[
 			[
+				"cur",
+				"cursor_x"
+			],
+			[
+				"janel",
+				"janela_editor"
+			],
+			[
+				"editor",
+				"editor_prop"
+			],
+			[
+				"cus",
+				"cursor_x"
+			],
+			[
+				"barr",
+				"barra_status"
+			],
+			[
+				"w",
+				"wrefresh"
+			],
+			[
+				"desc",
+				"desc_arq"
+			],
+			[
+				"barra",
+				"barra_titulo"
+			],
+			[
+				"tama",
+				"tamanho_stdscr"
+			],
+			[
+				"linh",
+				"linha_descritor"
+			],
+			[
+				"CARAC",
+				"CARACTERE"
+			],
+			[
 				"iter",
 				"iterador_linha"
 			],
@@ -35,7 +79,79 @@
 			"file": "main.c",
 			"settings":
 			{
-				"buffer_size": 3875,
+				"buffer_size": 1945,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "editor.h",
+			"settings":
+			{
+				"buffer_size": 1065,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "teste.txt",
+			"settings":
+			{
+				"buffer_size": 283,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "editor.c",
+			"settings":
+			{
+				"buffer_size": 1791,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "graficos.h",
+			"settings":
+			{
+				"buffer_size": 637,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "graficos.c",
+			"settings":
+			{
+				"buffer_size": 2209,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "utilidades.h",
+			"settings":
+			{
+				"buffer_size": 127,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "arquivos.h",
+			"settings":
+			{
+				"buffer_size": 345,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "arquivos.c",
+			"settings":
+			{
+				"buffer_size": 386,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -78,8 +194,9 @@
 	],
 	"file_history":
 	[
-		"/home/rafael/Documentos/BCC/algoritmos_2/T5/.gitignore",
+		"/home/rafael/Documentos/BCC/algoritmos_2/T5/graficos.c",
 		"/home/rafael/Documentos/BCC/algoritmos_2/T5/compile_run.sh",
+		"/home/rafael/Documentos/BCC/algoritmos_2/T5/.gitignore",
 		"/home/rafael/Documentos/BCC/algoritmos_2/T5/teste.c"
 	],
 	"find":
@@ -125,15 +242,242 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3875,
+						"buffer_size": 1945,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3875,
-								3875
+								1810,
+								1810
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 867.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "editor.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1065,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								836,
+								836
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 162.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "teste.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 283,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								208,
+								208
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "editor.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1791,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1776,
+								1776
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1446.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "graficos.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 637,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								209,
+								209
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "graficos.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2209,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1671,
+								1650
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1173.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "utilidades.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 127,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								119,
+								119
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "arquivos.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 345,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								169,
+								169
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "arquivos.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 386,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								268,
+								268
 							]
 						],
 						"settings":
@@ -141,10 +485,10 @@
 							"syntax": "Packages/C++/C.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 2848.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 8,
 					"type": "text"
 				}
 			]
@@ -227,7 +571,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 150.0,
+	"side_bar_width": 191.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

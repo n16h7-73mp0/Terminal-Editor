@@ -1,2 +1,4 @@
 Teste de texto.
 Alo texto de teste. 
+Outra linha do teste de texto
+Caramba tem 4 linhas.
