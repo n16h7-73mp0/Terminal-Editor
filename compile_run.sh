@@ -1,1 +1,1 @@
-gcc -Wall -Werror main.c -o main.o -lncurses && ./main.o
+gcc -Wall -Werror main.c arquivos.c editor.c graficos.c -o main.o -lncursesw && ./main.o
