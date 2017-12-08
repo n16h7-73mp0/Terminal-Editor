@@ -13,6 +13,7 @@ typedef struct descritor_arquivo
 
 //Tenta abrir um arquivo
 CODIGO_RETORNO abrir_arquivo(const char* nome_arq, const char* modo, FILE** arquivo);
+
 size_t tamanho_arquivo(FILE* arq);
 
 #endif

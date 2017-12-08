@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "utilidades.h"
 #include "arquivos.h"
 
@@ -37,9 +38,11 @@ typedef struct {
 //Basicamente faz nada
 void cria_string(CARACTERE** cabeca);
 void adiciona_caractere(CARACTERE** cabeca, char chr);
+void concatena_linha_anterior(LINHA** cabeca, size_t linha);
 void remove_caractere(LINHA** cabeca, size_t linha, size_t coluna);
 void insere_linha(LINHA** cabeca_linha, CARACTERE* cabeca_str);
-CODIGO_RETORNO cria_buffer_arquivo(LINHA** buffer, FILE* arquivo);
+CODIGO_RETORNO cria_buffer_arquivo(LINHA** buffer, const char* fnome, DESCRITOR_ARQUIVO* desc_arq);
+void salva_buffer_arquivo(LINHA** buffer, const char* fnome);
 void percorre_modo(MODO* modo);
 
 extern MODO modo;

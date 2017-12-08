@@ -8,6 +8,8 @@
 #include "editor.h"
 #include "graficos.h"
 
+#define KEY_WRITE 23
+
 //Variaveis de graficos.h
 int limte_superior_tela;
 int cursor_y, cursor_x;
@@ -24,26 +26,18 @@ int main(int argc, char** argv)
 	setlocale(LC_ALL, "");
 	inicia_ncurses();
 
-	FILE* arquivo;
 	DESCRITOR_ARQUIVO desc_arq;
 	LINHA* cabeca = NULL;
 	
-	if(abrir_arquivo("teste.txt", "r+", &arquivo))
+	if(cria_buffer_arquivo(&cabeca, "teste.txt", &desc_arq))
 	{
 		modo = COMANDO;
-		strcpy(desc_arq.nome, "teste.txt");
-		desc_arq.bytes = tamanho_arquivo(arquivo);
-		mvwprintw(barra_titulo, 1, (tamanho_stdscr.x - strlen(desc_arq.nome))/2, "%s", desc_arq.nome);
-		mvwprintw(barra_status, 1, 20, "%d Bytes", desc_arq.bytes);
-		wrefresh(barra_titulo);
-		wrefresh(barra_status);
-
 		
-		cria_buffer_arquivo(&cabeca, arquivo);
-		//remove_caractere(&cabeca, 0, 0);
+		mvwprintw(barra_titulo, 1, (tamanho_stdscr.x - strlen(desc_arq.nome))/2, "%s", desc_arq.nome);
+		wrefresh(barra_titulo);
+		
+		//cria_buffer_arquivo(&cabeca, arquivo);
 		renderiza_buffer(cabeca);
-		//wprintw(janela_editor, "%d", editor_prop.linhas);
-		//wrefresh(janela_editor);
 		wmove(janela_editor,0,0);
 		curs_set(0);
 		wrefresh(janela_editor);
@@ -68,12 +62,26 @@ int main(int argc, char** argv)
 			move_cursor(cursor_y, cursor_x + 1);
 		else if(ch == KEY_IC)
 			percorre_modo(&modo);
-		else if(ch == KEY_BACKSPACE && modo == INSERCAO && cursor_x != 0)
+		else if(ch == KEY_BACKSPACE && modo == INSERCAO)
 		{
-			remove_caractere(&cabeca, cursor_y, cursor_x - 1);
-			renderiza_buffer(cabeca);
-			move_cursor(cursor_y, cursor_x - 1);
+			if(cursor_x == 0)
+			{
+				concatena_linha_anterior(&cabeca, cursor_y);
+				renderiza_buffer(cabeca);
+				if(cursor_y != 0)
+					move_cursor(cursor_y - 1, cursor_x);
+			}else
+			{
+				remove_caractere(&cabeca, cursor_y, cursor_x);
+				renderiza_buffer(cabeca);
+				move_cursor(cursor_y, cursor_x - 1);	
+			}
 		}
+		else if(ch == KEY_WRITE)
+		{
+			salva_buffer_arquivo(&cabeca, "teste.txt");	
+		}
+		//mvwprintw(janela_editor,30,0, "%d", ch);
 
 		atualiza_barra_status(desc_arq, modo);
 		wrefresh(janela_editor);
@@ -81,8 +89,10 @@ int main(int argc, char** argv)
 
 	refresh();
 	getch();
+	delwin(barra_titulo);
+	delwin(barra_status);
 	endwin();
-	fclose(arquivo);
+	//fclose(arquivo);
 
 	return(0);
 }

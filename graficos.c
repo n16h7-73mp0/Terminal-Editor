@@ -59,7 +59,8 @@ void renderiza_buffer(LINHA* buff)
 		CARACTERE* iterador_str = iterador_linha->string;
 		while(iterador_str)
 		{
-			waddch(janela_editor, iterador_str->chr);
+			if(iterador_str->chr != '\0')
+				waddch(janela_editor, iterador_str->chr);
 			iterador_str = iterador_str->proximo; 
 		}
 		waddch(janela_editor, '\n');
