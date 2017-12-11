@@ -1,6 +1,3 @@
-1 Teste de texto.
-2 Alo texto de teste.
-3 teste de texto
+aTaeaste de texto.
+Texto de test.
 
-4 Caramba tem 4 linhas.
-5

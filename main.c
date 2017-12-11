@@ -34,9 +34,8 @@ int main(int argc, char** argv)
 		modo = COMANDO;
 		
 		mvwprintw(barra_titulo, 1, (tamanho_stdscr.x - strlen(desc_arq.nome))/2, "%s", desc_arq.nome);
+		mvwprintw(barra_titulo, 1, 1, "%d", editor_prop.linhas);
 		wrefresh(barra_titulo);
-		
-		//cria_buffer_arquivo(&cabeca, arquivo);
 		renderiza_buffer(cabeca);
 		wmove(janela_editor,0,0);
 		curs_set(0);
@@ -52,7 +51,7 @@ int main(int argc, char** argv)
 		getyx(janela_editor, cursor_y, cursor_x);
 		wchar_t ch = getch();
 
-		if(ch == KEY_DOWN && (modo == INSERCAO || modo == SOBRESCRICAO))
+		if(ch == KEY_DOWN && (modo == INSERCAO || modo == SOBRESCRICAO) && !ultima_linha(cabeca, cursor_y))
 			move_cursor(cursor_y + 1, cursor_x);
 		else if(ch == KEY_UP && (modo == INSERCAO || modo == SOBRESCRICAO))
 			move_cursor(cursor_y - 1, cursor_x);
@@ -80,6 +79,12 @@ int main(int argc, char** argv)
 		else if(ch == KEY_WRITE)
 		{
 			salva_buffer_arquivo(&cabeca, "teste.txt");	
+		}
+		else //Se não é nenhum dos caracteres de controle, assume que é um caractere que vai fazer
+		//parte do texto
+		{
+			insere_caractere_meio(&cabeca, cursor_y, cursor_x, ch);
+			renderiza_buffer(cabeca);
 		}
 		//mvwprintw(janela_editor,30,0, "%d", ch);
 

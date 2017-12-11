@@ -41,9 +41,11 @@ void adiciona_caractere(CARACTERE** cabeca, char chr);
 void concatena_linha_anterior(LINHA** cabeca, size_t linha);
 void remove_caractere(LINHA** cabeca, size_t linha, size_t coluna);
 void insere_linha(LINHA** cabeca_linha, CARACTERE* cabeca_str);
+void insere_caractere_meio(LINHA** caebca, size_t linha, size_t coluna, char chr);
 CODIGO_RETORNO cria_buffer_arquivo(LINHA** buffer, const char* fnome, DESCRITOR_ARQUIVO* desc_arq);
 void salva_buffer_arquivo(LINHA** buffer, const char* fnome);
 void percorre_modo(MODO* modo);
+int ultima_linha(LINHA* cabeca, size_t lihna);
 
 extern MODO modo;
 extern PROPRIEDADES_EDITOR editor_prop;

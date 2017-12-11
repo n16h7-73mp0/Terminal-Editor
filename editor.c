@@ -60,11 +60,18 @@ void concatena_linha_anterior(LINHA** cabeca, size_t linha)
 				CARACTERE* iterador_string = iterador_anterior->string;
 				while(iterador_string->proximo)
 					iterador_string = iterador_string->proximo;
+				//Define como próximo caractere da string
+				//O começo da string inicial da linha atual
 				iterador_string->proximo = iterador_atual->string;
 				iterador_atual->string->anterior = iterador_string;
+
+				//A proxima linha do anterior agora é a proxima linha do atual
 				iterador_anterior->proximo = iterador_atual->proximo;
+
+				//Se não for a última linha, define o anterior do proximo como o anterior do atual
 				if(iterador_atual->proximo)
-					iterador_atual->proximo = iterador_anterior;
+					iterador_atual->proximo->anterior = iterador_anterior;
+				//Deleta a linha da memória
 				free(iterador_atual);
 				return;
 			}
@@ -160,6 +167,50 @@ void insere_linha(LINHA** cabeca_linha, CARACTERE* cabeca_str)
 	}
 }
 
+void insere_caractere_meio(LINHA** cabeca, size_t linha, size_t coluna, char chr)
+{
+	CARACTERE* c = (CARACTERE*)malloc(sizeof(struct caractere));
+	c->chr = chr;
+	int linha_atual = 0;
+
+	LINHA* iterador_linha = *cabeca;
+
+	//Encontra a linha
+	while(iterador_linha)
+	{
+		if(linha == linha_atual)
+			break;
+		iterador_linha = iterador_linha->proximo;
+		linha_atual++;
+	}
+
+	//Se for adicionar no inicio da linha
+	if(coluna == 0)
+	{
+		c->proximo = iterador_linha->string;
+		iterador_linha->string->anterior = c;
+		iterador_linha->string = c;
+		return;
+	}
+
+	CARACTERE* iterador_coluna = iterador_linha->string;
+	int coluna_atual = 0;
+	//Encontra a coluna
+	while(iterador_coluna)
+	{
+		if(coluna - 1 == coluna_atual)
+		{
+			c->proximo = iterador_coluna->proximo;
+			c->anterior = iterador_coluna;
+			iterador_coluna->proximo = c;
+			return;
+		}
+
+		iterador_coluna = iterador_coluna->proximo;
+		coluna_atual++;
+	}
+}
+
 
 CODIGO_RETORNO cria_buffer_arquivo(LINHA** buffer, const char* fnome, DESCRITOR_ARQUIVO* desc_arq)
 {
@@ -170,27 +221,35 @@ CODIGO_RETORNO cria_buffer_arquivo(LINHA** buffer, const char* fnome, DESCRITOR_
 		char chr;
 		CARACTERE* c;
 		cria_string(&c);
+
+		int nova_linha = 1;
 		
-		editor_prop.linhas = 1;
-		editor_prop.colunas = 1;
+		editor_prop.linhas = 0;
 
 		while((chr = getc(arquivo)) != EOF)
 		{
 			if(chr == '\n')
 			{
-				editor_prop.linhas++;
-			/* Se o caractere for a nova linha, adiciona a string já lida, como linha e parte para outra */
+				/* Se o caractere for a nova linha, adiciona a string já lida, 
+				como linha e parte para outra */
+				adiciona_caractere(&c, chr);
 				insere_linha(buffer, c);
+				editor_prop.linhas++;
+				nova_linha = 1;
+				c = NULL;
+				continue;
+			}
+			
+			if(nova_linha)
+			{
 				cria_string(&c);
+				adiciona_caractere(&c, chr);
+				nova_linha = 0;
 			}else
 			{
 				adiciona_caractere(&c, chr);
 			}
 		}
-
-	//Insere a ultima linha lida
-		insere_linha(buffer, c);	
-
 		return SUCESSO;
 	}
 	fclose(arquivo);
@@ -210,14 +269,15 @@ void salva_buffer_arquivo(LINHA** buffer, const char* fnome)
 			CARACTERE* iterador_caractere = iterador_linha->string;
 			while(iterador_caractere)
 			{
-				fprintf(arquivo, "%c", iterador_caractere->chr);
+				if(iterador_caractere->chr != '\0')
+				{
+					fprintf(arquivo, "%c", iterador_caractere->chr);
+				}
 				iterador_caractere = iterador_caractere->proximo;
 			}
-			fprintf(arquivo, "\n");
 			iterador_linha = iterador_linha->proximo;
 		}
 	}
-
 	fclose(arquivo);
 }
 
@@ -237,4 +297,20 @@ void percorre_modo(MODO* modo)
 		*modo = COMANDO;
 		break;
 	}
+}
+
+//Funções auxiliares para graficos
+int ultima_linha(LINHA* cabeca, size_t linha)
+{
+	LINHA* iterador  = cabeca;
+	size_t linha_atual = 0;
+	while(linha_atual != linha)
+	{
+		linha_atual++;
+		iterador = iterador->proximo;
+	}
+
+	if(iterador->proximo)
+		return 0;
+	return 1;
 }

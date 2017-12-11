@@ -63,7 +63,7 @@ void renderiza_buffer(LINHA* buff)
 				waddch(janela_editor, iterador_str->chr);
 			iterador_str = iterador_str->proximo; 
 		}
-		waddch(janela_editor, '\n');
+		//waddch(janela_editor, '\n');
 		iterador_linha = iterador_linha->proximo;
 	}
 	wmove(janela_editor, cursor_y, cursor_x);
@@ -72,10 +72,8 @@ void renderiza_buffer(LINHA* buff)
 
 void move_cursor(size_t y, size_t x)
 {
-	//if(y >= limite_superior_tela)
 	wmove(janela_editor, y, x);
 	getyx(janela_editor, cursor_y, cursor_x);
-	//wrefresh(janela_editor);
 }
 
 void atualiza_barra_status(DESCRITOR_ARQUIVO desc_arq, MODO modo)
