@@ -1,3 +1,4 @@
 Outro texto de teste.
+Este arquivo serve somente para testar o editor.
 Para testar o editor de textos.
 

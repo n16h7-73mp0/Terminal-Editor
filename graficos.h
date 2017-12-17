@@ -10,7 +10,7 @@ typedef struct {
 	int x;
 } tamanho_janela;
 
-extern int limte_superior_tela;
+//Variaveis globais
 extern int cursor_y, cursor_x;
 extern WINDOW* janela_editor;
 extern WINDOW* barra_titulo;
@@ -19,11 +19,13 @@ extern tamanho_janela tamanho_stdscr;
 
 //Inicia o ncurses
 void inicia_ncurses(void);
-void imprime_string(CARACTERE* cabeca);
-void renderiza_buffer(LINHA* buff);
-//Move o cursor na tela, leva em consideração os limites
+//Renderiza a lista de linhas
+void renderiza_buffer(Cabeca cabeca);
+//Move o cursor na tela
 void move_cursor(size_t y, size_t x);
-void atualiza_barra_status(DESCRITOR_ARQUIVO desc_arq, MODO modo);
-
+//Atualiza a janela de status
+void atualiza_barra_status(MODO modo);
+//Finaliza o ncurses
+void termina_ncurses(void);
 
 #endif

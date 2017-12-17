@@ -1,32 +1,37 @@
 #include "editor.h"
 
+//Declaração de variáveis
 MODO modo;
-PROPRIEDADES_EDITOR editor_prop;
-DESCRITOR_ARQUIVO desc_arq;
+int modificado;
+char* nome_arquivo;
 
-//Basicamente faz nada
-void cria_string(CARACTERE** cabeca)
+//Cria uma string vazia
+void cria_string(String* cabeca)
 {
 	*cabeca = NULL; 
 }
 
 //Adiciona um caractere no final da string
-void adiciona_caractere(CARACTERE** cabeca, char chr)
+void adiciona_caractere(String* cabeca, char chr)
 {
-	CARACTERE* c = (CARACTERE*) malloc(sizeof(struct caractere));
+	//Aloca memória para a estrutura
+	Caractere c = (Caractere) malloc(sizeof(struct caractere));
 	c->chr = chr;
 
+	//Se a lista não estiver vazia
 	if(*cabeca)
 	{	
-		CARACTERE* iterador = *cabeca;
-
+		//Vai até o último caractere
+		IteradorString iterador = *cabeca;
 		while(iterador->proximo != NULL)
 			iterador = iterador->proximo;
 
+		//Coloca o novo caractere no final da lista
 		c->anterior = iterador;
 		c->proximo = NULL;
 		iterador->proximo = c;
 	}
+	//Senão adiciona o caractere no inicio da lista.
 	else
 	{
 		c->anterior = NULL;
@@ -35,63 +40,16 @@ void adiciona_caractere(CARACTERE** cabeca, char chr)
 	}
 }
 
-void concatena_linha_anterior(LINHA** cabeca, size_t linha)
+void remove_caractere(Cabeca* cabeca, size_t linha, size_t coluna)
 {
-	if(*cabeca != NULL)
-	{
-		if(linha == 0)
-		{
-			LINHA* lixo = *cabeca;
-			if((*cabeca)->proximo)
-				(*cabeca)->proximo->anterior = NULL;
-			*cabeca = (*cabeca)->proximo;
-			free(lixo);
-			return;
-		}
+	//Quando um caractere é removido, o arquivo fica marcado com modificado
+	modificado = 1;
 
-		LINHA* iterador_anterior = *cabeca;
-		LINHA* iterador_atual = (*cabeca)->proximo;
-		int linha_atual = 1;
-
-		while(iterador_atual)
-		{
-			if(linha_atual == linha)
-			{
-				//Navega até o final da string da linha anterior.
-				CARACTERE* iterador_string = iterador_anterior->string;
-				while(iterador_string->proximo)
-					iterador_string = iterador_string->proximo;
-				
-				//Define como próximo caractere da string
-				//O começo da string inicial da linha atual
-				iterador_string->proximo = iterador_atual->string;
-				iterador_atual->string->anterior = iterador_string;
-
-				//A proxima linha do anterior agora é a proxima linha do atual
-				iterador_anterior->proximo = iterador_atual->proximo;
-
-				//Se não for a última linha, define o anterior do proximo como o anterior do atual
-				if(iterador_atual->proximo)
-					iterador_atual->proximo->anterior = iterador_anterior;
-				//Deleta a linha da memória
-				free(iterador_atual);
-				return;
-			}
-
-			iterador_anterior = iterador_atual;
-			iterador_atual = iterador_atual->proximo;
-			linha_atual++;
-		}
-	}
-}
-
-void remove_caractere(LINHA** cabeca, size_t linha, size_t coluna)
-{
 	size_t linha_atual = 0;
 	size_t coluna_atual = 0;
 
-	LINHA* iterador_linha = *cabeca;
-
+	IteradorLinha iterador_linha = *cabeca;
+	//Vai até a linha 'linha'
 	while(iterador_linha)
 	{
 		if(linha == linha_atual)
@@ -104,7 +62,7 @@ void remove_caractere(LINHA** cabeca, size_t linha, size_t coluna)
 	{
 		//Se o usuário tentar apagar o que seria o último caractre, o programa deve concatenar a linha atual
 		//com a linha anterior.
-		CARACTERE* iterador_coluna = iterador_linha->anterior->string;
+		IteradorString iterador_coluna = iterador_linha->anterior->string;
 		//Caminha até o penultimo nó, antes do '\n'
 
 		while(iterador_coluna->proximo->proximo)
@@ -129,81 +87,93 @@ void remove_caractere(LINHA** cabeca, size_t linha, size_t coluna)
 		return;
 	}
 
+	//Se o caractere for o primeiro
 	if(coluna == 1)
 	{
-		CARACTERE* lixo = iterador_linha->string;
+		//Prepara para remover
+		Caractere lixo = iterador_linha->string;
 		
-		if(iterador_linha->string->proximo)
+		//Se ele não for o unico caractere
+		if(lixo->proximo)
 		{
-			iterador_linha->string->proximo->anterior = NULL;
-			iterador_linha->string = iterador_linha->string->proximo;
+			lixo->proximo->anterior = NULL;
+			iterador_linha->string = lixo->proximo;
 		}
+		//Tira o caractere da memória e sai da função
 		free(lixo);
 		return;
 	}
 
-	CARACTERE* iterador_coluna = iterador_linha->string;
+	//Se não for nenhum dos casos específicos, procura e remove o caractere
+	IteradorString iterador_coluna = iterador_linha->string;
 	
-
+	//Vai até o caractere a ser removido
 	while(iterador_coluna)
 	{
-		//O indice da letra a ser apagada, é INDICE_REAL + 1
+		//o caractere fica a ser apagado fica atras do cursor
 		if(coluna - 1 == coluna_atual)
 			break;
 		coluna_atual++;
 		iterador_coluna = iterador_coluna->proximo;
 	}
-
+	//Se houver algum atras dele
 	if(iterador_coluna->anterior)
 		iterador_coluna->anterior->proximo = iterador_coluna->proximo;
-			
+	//Se houver algum depois dele
 	if(iterador_coluna->proximo)
 		iterador_coluna->proximo->anterior = iterador_coluna->anterior;
-
+	//Tira ele da memória
 	free(iterador_coluna);
 }
 
-void insere_linha(LINHA** cabeca_linha, CARACTERE* cabeca_str)
+void insere_linha(Cabeca* cabeca_linha, String cabeca_str)
 {
-	LINHA* l = (LINHA*) malloc(sizeof(struct linha));
+	//Aloca espaço na memória
+	Cabeca l = (Cabeca) malloc(sizeof(struct linha));
 	l->string = cabeca_str;
 
+	//Se a lista não for vazia
 	if(*cabeca_linha)
 	{
-		LINHA* iterador = *cabeca_linha;
-
+		//Vai até a última linha
+		IteradorLinha iterador = *cabeca_linha;
 		while(iterador->proximo != NULL)
 			iterador = iterador->proximo;
 
+		//Adiciona a nova linha no final
 		l->anterior = iterador;
 		l->proximo = NULL;
 		iterador->proximo = l;
 	}
 	else
 	{
+		//Senão, a lista é somente essa nova linha
 		l->anterior = NULL;
 		l->proximo = NULL;
 		*cabeca_linha = l;
 	}
 }
 
-void quebra_linha(LINHA** cabeca, size_t linha, size_t coluna)
+void quebra_linha(Cabeca* cabeca, size_t linha, size_t coluna)
 {
-	LINHA* nova_linha = (LINHA*) malloc(sizeof(struct linha));
+	//Se uma linha for quebrada o arquivo fica marcado como modificado
+	modificado = 1;
+	//Aloca memória para a nova linha
+	Linha nova_linha = (Linha) malloc(sizeof(struct linha));
+	//Vai até a linha 'linha'
 	size_t linha_atual = 0;
-	LINHA* iterador_linha = *cabeca;
-
+	IteradorLinha iterador_linha = *cabeca;
 	while(iterador_linha)
 	{
 		if(linha_atual == linha)
 			break;
-
 		iterador_linha = iterador_linha->proximo;
 		linha_atual++;
 	}
 
+	//Vai até a coluna 'coluna'
 	size_t coluna_atual = 0;
-	CARACTERE* iterador_coluna = iterador_linha->string;
+	IteradorString iterador_coluna = iterador_linha->string;
 	while(iterador_coluna)
 	{
 		if(coluna_atual == coluna)
@@ -222,31 +192,30 @@ void quebra_linha(LINHA** cabeca, size_t linha, size_t coluna)
 	//frente dele para a próxima linha, o texto antes do cursor fica na linha atual.
 	if(iterador_coluna->proximo)
 	{
-		mvprintw(31, 0, "ENTER, nao e o ultimo");
 		iterador_coluna->anterior->proximo = NULL;
 		iterador_coluna->anterior = NULL;
 		adiciona_caractere(&(iterador_linha->string), '\n');
 		nova_linha->string = iterador_coluna;
 	}else
 	{
-		mvprintw(31, 0, "ENTER, é o ultimo");
-		nova_linha->string = (CARACTERE*)malloc(sizeof(struct caractere));
+		nova_linha->string = (String)malloc(sizeof(struct caractere));
 		nova_linha->string->chr = '\n';
 		nova_linha->string->anterior = NULL;
 		nova_linha->string->proximo = NULL;
 	}
-	refresh();
 }
 
-void insere_caractere_meio(LINHA** cabeca, size_t linha, size_t coluna, char chr)
+void insere_caractere_meio(Cabeca* cabeca, size_t linha, size_t coluna, char chr)
 {
-	CARACTERE* c = (CARACTERE*)malloc(sizeof(struct caractere));
+	//Se um caractere for inserido o arquivo fica marcado como modificado
+	modificado = 1;
+
+	Caractere c = (Caractere)malloc(sizeof(struct caractere));
 	c->chr = chr;
 	int linha_atual = 0;
 
-	LINHA* iterador_linha = *cabeca;
-
 	//Encontra a linha
+	IteradorLinha iterador_linha = *cabeca;
 	while(iterador_linha)
 	{
 		if(linha == linha_atual)
@@ -261,22 +230,21 @@ void insere_caractere_meio(LINHA** cabeca, size_t linha, size_t coluna, char chr
 		c->proximo = iterador_linha->string;
 		iterador_linha->string->anterior = c;
 		iterador_linha->string = c;
-		
 		return;
 	}
 
-	CARACTERE* iterador_coluna = iterador_linha->string;
+	//Senão encontra a coluna
+	IteradorString iterador_coluna = iterador_linha->string;
 	int coluna_atual = 0;
-	
-	//Encontra a coluna
 	while(iterador_coluna)
 	{
+		//O caractere fica atrás do cursor
 		if(coluna - 1 == coluna_atual)
 			break;
 		iterador_coluna = iterador_coluna->proximo;
 		coluna_atual++;
 	}
-
+	//Organiza a ordem dos caracteres
 	c->proximo = iterador_coluna->proximo;
 	c->anterior = iterador_coluna;
 	iterador_coluna->proximo = c;
@@ -284,19 +252,19 @@ void insere_caractere_meio(LINHA** cabeca, size_t linha, size_t coluna, char chr
 	return;
 }
 
-CODIGO_RETORNO cria_buffer_arquivo(LINHA** buffer)
+CODIGO_RETORNO cria_buffer_arquivo(Cabeca* cabeca)
 {
 	FILE* arquivo;
 	
+	//Se abrir o arquivo com sucesso
 	if(abrir_arquivo(&arquivo))
 	{
+		
 		char chr;
-		CARACTERE* c;
+		Caractere c;
 		cria_string(&c);
 
 		int nova_linha = 1;
-		
-		editor_prop.linhas = 0;
 
 		while((chr = getc(arquivo)) != EOF)
 		{
@@ -305,13 +273,13 @@ CODIGO_RETORNO cria_buffer_arquivo(LINHA** buffer)
 				/* Se o caractere for a nova linha, adiciona a string já lida, 
 				como linha e parte para outra */
 				adiciona_caractere(&c, chr);
-				insere_linha(buffer, c);
-				editor_prop.linhas++;
+				insere_linha(cabeca, c);
 				nova_linha = 1;
 				c = NULL;
 				continue;
 			}
 			
+			//Se for uma nova linha
 			if(nova_linha)
 			{
 				cria_string(&c);
@@ -323,41 +291,40 @@ CODIGO_RETORNO cria_buffer_arquivo(LINHA** buffer)
 			}
 		}
 
-		if(*buffer == NULL)
+		if(*cabeca == NULL)
 		{
 			//Significa que o arquivo ou estava completamente vazio, ou o arquivo não existia.
 			//Cria um buffer vazio.
-			*buffer = (LINHA*)malloc(sizeof(struct linha));
-			(*buffer)->string = (CARACTERE*)malloc(sizeof(struct caractere));
-			(*buffer)->anterior = NULL;
-			(*buffer)->proximo = NULL;
-			(*buffer)->string->anterior = NULL;
-			(*buffer)->string->proximo = NULL;
-			(*buffer)->string->chr = '\n';
+			*cabeca = (Linha)malloc(sizeof(struct linha));
+			(*cabeca)->string = (Caractere)malloc(sizeof(struct caractere));
+			(*cabeca)->anterior = NULL;
+			(*cabeca)->proximo = NULL;
+			(*cabeca)->string->anterior = NULL;
+			(*cabeca)->string->proximo = NULL;
+			(*cabeca)->string->chr = '\n';
 		}
 
 		fclose(arquivo);
 		return SUCESSO;
 	}
-
 	return ERRO;
 }
 
-CODIGO_RETORNO salva_buffer_arquivo(LINHA** buffer)
+CODIGO_RETORNO salva_buffer_arquivo(Cabeca* cabeca)
 {
 	//Abre no modo de escrita sobrescrevendo todo o conteúdo antigo
 	//com o novo
-	FILE* arquivo = fopen(desc_arq.nome, "w+");
+	FILE* arquivo = fopen(nome_arquivo, "w+");
 	
 	//Se abriu com sucesso
 	if(arquivo)
 	{
 		//Itera linha por linha
-		LINHA* iterador_linha = *buffer;
+		IteradorLinha iterador_linha = *cabeca;
 		while(iterador_linha)
 		{
 			//Itera caractere por caractere
-			CARACTERE* iterador_caractere = iterador_linha->string;
+			IteradorString iterador_caractere = iterador_linha->string;
 			while(iterador_caractere)
 			{
 				//Se o caractere não for NULL
@@ -394,24 +361,28 @@ void percorre_modo(MODO* modo)
 }
 
 //Funções auxiliares para graficos
-int ultima_linha(LINHA* cabeca, size_t linha)
+
+int ultima_linha(Cabeca cabeca, size_t linha)
 {
-	LINHA* iterador  = cabeca;
+	//Vai até a linha
+	IteradorLinha iterador  = cabeca;
 	size_t linha_atual = 0;
 	while(linha_atual != linha)
 	{
 		linha_atual++;
 		iterador = iterador->proximo;
 	}
-
+	//Se ela não for a última
 	if(iterador->proximo)
 		return 0;
+	//Se ela for a última
 	return 1;
 }
 
-int ultimo_caractere(LINHA* cabeca, size_t linha, size_t coluna)
+int ultimo_caractere(Cabeca cabeca, size_t linha, size_t coluna)
 {
-	LINHA* iterador_linha = cabeca;
+	//Vai até a linha
+	IteradorLinha iterador_linha = cabeca;
 	size_t linha_atual = 0;
 	while(linha_atual != linha)
 	{
@@ -419,7 +390,8 @@ int ultimo_caractere(LINHA* cabeca, size_t linha, size_t coluna)
 		iterador_linha = iterador_linha->proximo;
 	}
 
-	CARACTERE* iterador = iterador_linha->string;
+	//Vai até a coluna
+	IteradorString iterador = iterador_linha->string;
 	size_t coluna_atual = 0;
 	while(coluna_atual != coluna)
 	{
@@ -427,27 +399,31 @@ int ultimo_caractere(LINHA* cabeca, size_t linha, size_t coluna)
 		iterador = iterador->proximo;
 	}
 
+	//Se ele não for o último
 	if(iterador->proximo)
 		return 0;
+	//Se ele for o último
 	return 1;
 }
 
-int tamanho_linha(LINHA* cabeca, size_t linha)
+int tamanho_linha(Cabeca cabeca, size_t linha)
 {
-	LINHA* iterador_linha = cabeca;
+	//Vai até a linha
+	IteradorLinha iterador_linha = cabeca;
 	size_t linha_atual = 0;
 	while(linha_atual != linha)
 	{
 		linha_atual++;
 		iterador_linha = iterador_linha->proximo;
 	}
-
-	CARACTERE* iterador = iterador_linha->string;
+	//Vai contando caractere por carctere 
+	IteradorString iterador = iterador_linha->string;
 	size_t colunas = 0;
 	while(iterador)
 	{
 		colunas++;
 		iterador = iterador->proximo;
 	}
+	//Numero de carcteres = numero de caracteres - 1 quebra de linha
 	return colunas - 1;
 }

@@ -11,24 +11,19 @@
 #define KEY_NOVA_LINHA 10
 #define KEY_INSERE 23
 #define KEY_APAGA 127
+#define KEY_SAI 00
 
-//Variaveis de graficos.h
-int limte_superior_tela;
 int cursor_y, cursor_x;
 WINDOW* janela_editor;
 WINDOW* barra_titulo;
 WINDOW* barra_status;
 tamanho_janela tamanho_stdscr;
-
 MODO modo;
+char* nome_arquivo;
 
-PROPRIEDADES_EDITOR editor_prop;
-
-DESCRITOR_ARQUIVO desc_arq;
 int main(int argc, char** argv)
 {
 	setlocale(LC_ALL, "");
-	
 	//Verifica os argumentos
 	//Se somente 1 arg (nome do executavel)
 	if(argc == 1)
@@ -44,20 +39,23 @@ int main(int argc, char** argv)
 	}else
 	{
 		//Ponteiro para o primeiro item da lista que armazena as linhas
-		LINHA* cabeca = NULL;
+		Cabeca cabeca = NULL;
 		//bem intuitivo
-		strcpy(desc_arq.nome, argv[1]);
+		nome_arquivo = (char*)malloc(255);
+		strcpy(nome_arquivo, argv[1]);
 		
 		//Se conseguir, com sucesso passar o arquivo para a memória
 		if(cria_buffer_arquivo(&cabeca))
 		{
+			//O arquivo começa, obviamente, sem modificações
+			modificado = 0;
 			//Inicia o ncruses, cria as janelas
 			inicia_ncurses();
 			//Inicia no modo OCIOSO
 			modo = OCIOSO;
 			
 			//Imprime o nome do arquivo no meio da barra de titulos
-			mvwprintw(barra_titulo, 1, (tamanho_stdscr.x - strlen(desc_arq.nome))/2, "%s", desc_arq.nome);
+			mvwprintw(barra_titulo, 1, (tamanho_stdscr.x - strlen(nome_arquivo))/2, "%s", nome_arquivo);
 			wrefresh(barra_titulo);
 			//renderiza o buffer na tela.
 			renderiza_buffer(cabeca);
@@ -72,7 +70,6 @@ int main(int argc, char** argv)
 			printf("Houve um erro ao passar o arquivo para o buffer.\n");
 			return(-1);
 		}
-			
 
 		//Loop principal
 		for(;;)
@@ -85,29 +82,33 @@ int main(int argc, char** argv)
 			//Sequência de if's para processar o que o usuário digitou
 			//teclas direcionais
 			if(ch == KEY_DOWN && modo == INSERCAO)
+				//Se for a última linha, não desce
 				if(ultima_linha(cabeca, cursor_y))
 					continue;
 				else
 				{
-					//int chrs_atual = tamanho_linha(cabeca, cursor_y);
+					//Quando for descer, a posição do cursor for maior que 
+					//a quantidade de caracteres da linha de baixo
+					//desce pro ultimo caractere da linha
 					int chrs_prox = tamanho_linha(cabeca, cursor_y + 1);
 					if(cursor_x > chrs_prox)
 						move_cursor(cursor_y + 1, cursor_x - (cursor_x - chrs_prox));
 					else
 						move_cursor(cursor_y + 1, cursor_x);
 				}
-					
 			else if(ch == KEY_UP && modo == INSERCAO)
 				move_cursor(cursor_y - 1, cursor_x);
 			else if(ch == KEY_LEFT && modo == INSERCAO)
 				move_cursor(cursor_y, cursor_x - 1);
 			else if(ch == KEY_RIGHT && modo == INSERCAO)
+				//Se for o ultimo caractere não vai para direita
 				if(ultimo_caractere(cabeca, cursor_y, cursor_x))
 					continue;
 				else
 					move_cursor(cursor_y, cursor_x + 1);
 			//Tecla INSERT
 			else if(ch == KEY_IC)
+				//Altera o modo do editor
 				percorre_modo(&modo);
 			//BACKSPACE
 			else if(ch == KEY_APAGA && modo == INSERCAO)
@@ -125,8 +126,18 @@ int main(int argc, char** argv)
 			}
 			//CTRL + W
 			else if(ch == KEY_INSERE)
+			{
 				//Salva o buffer no arquivo
-				salva_buffer_arquivo(&cabeca);	
+				if(salva_buffer_arquivo(&cabeca))
+				{
+					modificado = 0;
+				}else
+				{
+					termina_ncurses();
+					printf("Não foi possível salvar o arquivo.\n");
+				}
+
+			}
 			//ENTER
 			else if(modo == INSERCAO && ch == KEY_NOVA_LINHA)
 			{
@@ -145,16 +156,13 @@ int main(int argc, char** argv)
 			}
 			
 			//Atualiza algumas janelas
-			atualiza_barra_status(desc_arq, modo);
+			atualiza_barra_status(modo);
 			wrefresh(janela_editor);
 		}
 
 		//Limpa as coisas
 		refresh();
-		getch();
-		delwin(barra_titulo);
-		delwin(barra_status);
-		endwin();	
+		termina_ncurses();
 	}
 	return(0);
 }
