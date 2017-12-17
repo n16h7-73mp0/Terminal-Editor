@@ -63,7 +63,6 @@ void renderiza_buffer(LINHA* buff)
 				waddch(janela_editor, iterador_str->chr);
 			iterador_str = iterador_str->proximo; 
 		}
-		//waddch(janela_editor, '\n');
 		iterador_linha = iterador_linha->proximo;
 	}
 	wmove(janela_editor, cursor_y, cursor_x);
@@ -83,7 +82,7 @@ void atualiza_barra_status(DESCRITOR_ARQUIVO desc_arq, MODO modo)
 
 	switch(modo)
 	{
-		case COMANDO:
+		case OCIOSO:
 			curs_set(0);
 			mvwprintw(barra_status, 1, 1, "");
 		break;
@@ -91,12 +90,6 @@ void atualiza_barra_status(DESCRITOR_ARQUIVO desc_arq, MODO modo)
 		case INSERCAO:
 			curs_set(1);
 			mvwprintw(barra_status, 1, 1, "--INSERÇÃO--");
-			mvwprintw(barra_status, 1, 20, "%d:%d", cursor_y, cursor_x);
-		break;
-
-		case SOBRESCRICAO:
-			curs_set(1);
-			mvwprintw(barra_status, 1, 1, "--SOBRESCRITA--");
 			mvwprintw(barra_status, 1, 20, "%d:%d", cursor_y, cursor_x);
 		break;
 	}

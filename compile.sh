@@ -1,0 +1,1 @@
+gcc -Wall -Werror main.c arquivos.c editor.c graficos.c -o editor -lncursesw

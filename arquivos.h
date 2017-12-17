@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include "utilidades.h"
 
 typedef struct descritor_arquivo
@@ -12,8 +13,10 @@ typedef struct descritor_arquivo
 } DESCRITOR_ARQUIVO;
 
 //Tenta abrir um arquivo
-CODIGO_RETORNO abrir_arquivo(const char* nome_arq, const char* modo, FILE** arquivo);
+CODIGO_RETORNO abrir_arquivo(FILE** arquivo);
 
 size_t tamanho_arquivo(FILE* arq);
+
+extern DESCRITOR_ARQUIVO desc_arq;
 
 #endif

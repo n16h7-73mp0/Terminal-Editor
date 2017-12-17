@@ -1,12 +1,19 @@
 #include "arquivos.h"
 
+DESCRITOR_ARQUIVO desc_arq;
+
 //Tenta abrir um arquivo
-CODIGO_RETORNO abrir_arquivo(const char* nome_arq, const char* modo, FILE** arquivo){
-	*arquivo = fopen(nome_arq, modo);
+CODIGO_RETORNO abrir_arquivo(FILE** arquivo){
+	*arquivo = fopen(desc_arq.nome, "a+");
+	//Verifica se o arquivo foi aberto/criado com sucesso
 	if(*arquivo)
+	{
+		fseek(*arquivo, SEEK_SET, 0);
 		return SUCESSO;
-	else
-		return ERRO;
+	}
+	//Mostra a mensagem de erro
+	perror("ERRO");
+	return ERRO;
 }
 
 //Retorna o tamanho de um arquivo em bytes

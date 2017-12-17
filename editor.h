@@ -4,11 +4,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ncurses.h>
 #include "utilidades.h"
 #include "arquivos.h"
 
 //Modo do editor
-typedef enum { COMANDO, INSERCAO, SOBRESCRICAO} MODO;
+typedef enum { OCIOSO, INSERCAO} MODO;
 
 //estrutura da lista que representa o texto de uma linha
 typedef struct caractere
@@ -41,11 +42,14 @@ void adiciona_caractere(CARACTERE** cabeca, char chr);
 void concatena_linha_anterior(LINHA** cabeca, size_t linha);
 void remove_caractere(LINHA** cabeca, size_t linha, size_t coluna);
 void insere_linha(LINHA** cabeca_linha, CARACTERE* cabeca_str);
+void quebra_linha(LINHA** cabeca_linha, size_t linha, size_t coluna);
 void insere_caractere_meio(LINHA** caebca, size_t linha, size_t coluna, char chr);
-CODIGO_RETORNO cria_buffer_arquivo(LINHA** buffer, const char* fnome, DESCRITOR_ARQUIVO* desc_arq);
-void salva_buffer_arquivo(LINHA** buffer, const char* fnome);
+CODIGO_RETORNO cria_buffer_arquivo(LINHA** buffer);
+CODIGO_RETORNO salva_buffer_arquivo(LINHA** buffer);
 void percorre_modo(MODO* modo);
 int ultima_linha(LINHA* cabeca, size_t lihna);
+int ultimo_caractere(LINHA* cabeca, size_t linha,  size_t coluna);
+int tamanho_linha(LINHA* cabeca, size_t linha);
 
 extern MODO modo;
 extern PROPRIEDADES_EDITOR editor_prop;
